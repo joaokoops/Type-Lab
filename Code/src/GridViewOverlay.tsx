@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { GridItem } from './gridModel'
 import type { TypographySettings } from './model'
+import { presets } from './animationPresets'
 
 type Active = {
   item: GridItem
@@ -19,34 +20,6 @@ const settings = {
   animatePerCharacter: true,
   characterStaggerMs: 24,
 } as const
-
-const keyframes: Keyframe[] = [
-  { transform: 'translate(0px, 60px) rotate(-4deg)', opacity: 0 },
-  { transform: 'translate(0px, 0px) rotate(-4deg)', opacity: 1 },
-]
-
-const options: KeyframeAnimationOptions = {
-  duration: 1000,
-  easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
-  fill: 'both',
-}
-
-// Function to get dynamic keyframes based on applied settings
-const getKeyframes = (settings: TypographySettings | null): Keyframe[] => {
-  if (settings) {
-    return [
-      { 
-        transform: `translate(${settings.initialX}px, ${settings.initialY}px) rotate(${settings.rotationDeg}deg)`, 
-        opacity: 0 
-      },
-      { 
-        transform: `translate(${settings.endX}px, ${settings.endY}px) rotate(${settings.rotationDeg}deg)`, 
-        opacity: 1 
-      },
-    ]
-  }
-  return keyframes
-}
 
 function rectToInset(rect: DOMRect) {
   const top = rect.top
@@ -122,25 +95,38 @@ export function GridViewOverlay({ active, onClose, appliedSettings }: Props) {
         targets.forEach((el) => el.getAnimations().forEach((a) => a.cancel()))
         targets.forEach((el, i) => {
           // Use appliedSettings if available, otherwise use default settings
-          const delay = i * (appliedSettings?.characterStaggerMs || settings.characterStaggerMs)
-          const duration = appliedSettings?.durationMs || options.duration
-          const dynamicKeyframes = getKeyframes(appliedSettings)
+          const currentSettings = appliedSettings || {
+            presetId: 'effect-1' as const,
+            durationMs: settings.durationMs,
+            characterStaggerMs: settings.characterStaggerMs,
+            initialX: 0,
+            initialY: 60,
+            endX: 0,
+            endY: 0,
+            rotationDeg: -4,
+          }
           
-          el.animate(dynamicKeyframes, { 
-            ...options, 
-            duration,
+          const preset = presets[currentSettings.presetId]
+          const delay = i * currentSettings.characterStaggerMs
+          
+          el.animate(preset.getKeyframes(currentSettings), { 
+            ...preset.getOptions(currentSettings),
             delay 
           })
         })
 
         // Show back button after character animations start
-        const duration = appliedSettings?.durationMs || (options.duration as number)
+        const currentSettings = appliedSettings || {
+          presetId: 'effect-1' as const,
+          durationMs: settings.durationMs,
+          characterStaggerMs: settings.characterStaggerMs,
+        }
         const totalAnimationTime = Math.max(...targets.map((_, i) => 
-          i * (appliedSettings?.characterStaggerMs || settings.characterStaggerMs) + duration
+          i * currentSettings.characterStaggerMs + currentSettings.durationMs
         ))
         setTimeout(() => setShowBackButton(true), totalAnimationTime - 200) // Show slightly before last character completes
       })
-  }, [active, insetFrom])
+  }, [active, insetFrom, appliedSettings])
 
   useEffect(() => {
     if (!active) return
