@@ -19,6 +19,7 @@ type Active = {
 }
 
 export function GridView({ appliedSettings }: Props) {
+  console.log('GridView received appliedSettings:', appliedSettings)
   const [paste, setPaste] = useState(() => {
     const saved = window.localStorage.getItem('tl.grid.layers')
     return saved ?? defaultPaste

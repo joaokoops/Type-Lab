@@ -95,6 +95,7 @@ export function GridViewOverlay({ active, onClose, appliedSettings }: Props) {
         targets.forEach((el) => el.getAnimations().forEach((a) => a.cancel()))
         targets.forEach((el, i) => {
           // Use appliedSettings if available, otherwise use default settings
+          console.log('GridViewOverlay appliedSettings:', appliedSettings)
           const currentSettings = appliedSettings || {
             presetId: 'effect-1' as const,
             durationMs: settings.durationMs,

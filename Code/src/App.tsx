@@ -17,6 +17,7 @@ function App() {
   }, [])
 
   const handleApply = () => {
+    console.log('Apply button clicked, settings:', settings)
     setAppliedSettings(settings)
   }
 
