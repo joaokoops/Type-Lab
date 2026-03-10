@@ -39,8 +39,8 @@ export function PreviewStage({ settings, playSignal }: Props) {
       el.getAnimations().forEach((a) => a.cancel())
       el.style.opacity = ''
       el.style.transform = ''
-      ;(el.style as any).clipPath = ''
-      ;(el.style as any).filter = ''
+      el.style.removeProperty('clip-path')
+      el.style.removeProperty('filter')
     }
 
     const preset = presets[settings.presetId]
