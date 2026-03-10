@@ -19,7 +19,6 @@ type Active = {
 }
 
 export function GridView({ appliedSettings }: Props) {
-  console.log('GridView received appliedSettings:', appliedSettings)
   const [paste, setPaste] = useState(() => {
     const saved = window.localStorage.getItem('tl.grid.layers')
     return saved ?? defaultPaste
@@ -52,16 +51,14 @@ export function GridView({ appliedSettings }: Props) {
       baseItems = baseItems.map((item, index) => {
         const modifiedItem = { ...item }
         
-        // Apply background color to first item only
+        // Apply background and text color to first item only
         if (index === 0) {
           modifiedItem.bgColor = appliedSettings.backgroundColor
+          modifiedItem.textColor = appliedSettings.textColor
         }
         
-        // Apply text color to all items
-        modifiedItem.textColor = appliedSettings.textColor
-        
-        // Apply text animation settings (this will be used in the overlay)
-        // The text content remains the same
+        // Animation settings are applied to all items via the overlay
+        // The text content remains the same for all items
         
         return modifiedItem
       })
