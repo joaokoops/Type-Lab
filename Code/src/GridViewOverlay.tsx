@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { GridItem } from './gridModel'
+import type { TypographySettings } from './model'
 
 type Active = {
   item: GridItem
@@ -9,6 +10,7 @@ type Active = {
 type Props = {
   active: Active
   onClose: () => void
+  appliedSettings: TypographySettings | null
 }
 
 const settings = {
@@ -29,6 +31,23 @@ const options: KeyframeAnimationOptions = {
   fill: 'both',
 }
 
+// Function to get dynamic keyframes based on applied settings
+const getKeyframes = (settings: TypographySettings | null): Keyframe[] => {
+  if (settings) {
+    return [
+      { 
+        transform: `translate(${settings.initialX}px, ${settings.initialY}px) rotate(${settings.rotationDeg}deg)`, 
+        opacity: 0 
+      },
+      { 
+        transform: `translate(${settings.endX}px, ${settings.endY}px) rotate(${settings.rotationDeg}deg)`, 
+        opacity: 1 
+      },
+    ]
+  }
+  return keyframes
+}
+
 function rectToInset(rect: DOMRect) {
   const top = rect.top
   const left = rect.left
@@ -37,7 +56,7 @@ function rectToInset(rect: DOMRect) {
   return `${top}px ${right}px ${bottom}px ${left}px`
 }
 
-export function GridViewOverlay({ active, onClose }: Props) {
+export function GridViewOverlay({ active, onClose, appliedSettings }: Props) {
   const overlayRef = useRef<HTMLDivElement | null>(null)
   const charsContainerRef = useRef<HTMLDivElement | null>(null)
   const animatingRef = useRef(false)
@@ -102,13 +121,25 @@ export function GridViewOverlay({ active, onClose }: Props) {
         const targets = Array.from(container.querySelectorAll<HTMLElement>('[data-tl-target]'))
         targets.forEach((el) => el.getAnimations().forEach((a) => a.cancel()))
         targets.forEach((el, i) => {
-          const delay = i * settings.characterStaggerMs
-          el.animate(keyframes, { ...options, delay })
+          // Use appliedSettings if available, otherwise use default settings
+          const animSettings = appliedSettings || settings
+          const delay = i * (appliedSettings?.characterStaggerMs || settings.characterStaggerMs)
+          const duration = appliedSettings?.durationMs || options.duration
+          const dynamicKeyframes = getKeyframes(appliedSettings)
+          
+          el.animate(dynamicKeyframes, { 
+            ...options, 
+            duration,
+            delay 
+          })
         })
 
         // Show back button after character animations start
-        const duration = options.duration as number
-        const totalAnimationTime = Math.max(...targets.map((_, i) => i * settings.characterStaggerMs + duration))
+        const animSettings = appliedSettings || settings
+        const duration = appliedSettings?.durationMs || (options.duration as number)
+        const totalAnimationTime = Math.max(...targets.map((_, i) => 
+          i * (appliedSettings?.characterStaggerMs || settings.characterStaggerMs) + duration
+        ))
         setTimeout(() => setShowBackButton(true), totalAnimationTime - 200) // Show slightly before last character completes
       })
   }, [active, insetFrom])
@@ -194,12 +225,13 @@ export function GridViewOverlay({ active, onClose }: Props) {
             ref={charsContainerRef}
             className="select-none"
             style={{
-              fontFamily: 'Helvetica Neue',
-              fontSize: 'clamp(80px, 15vw, 400px)',
-              letterSpacing: '-0.01em',
-              lineHeight: 0.72,
-              fontWeight: 450,
+              fontFamily: appliedSettings?.fontFamily || 'Helvetica Neue',
+              fontSize: appliedSettings ? `${appliedSettings.fontSizePx}px` : 'clamp(80px, 15vw, 400px)',
+              letterSpacing: appliedSettings ? `${appliedSettings.letterSpacingEm}em` : '-0.01em',
+              lineHeight: appliedSettings?.lineHeight || 0.72,
+              fontWeight: appliedSettings?.fontWeight || 450,
               color: item.textColor,
+              transform: appliedSettings ? `rotate(${appliedSettings.rotationDeg}deg)` : 'none',
             }}
           >
             <div className="whitespace-pre">

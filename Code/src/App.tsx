@@ -10,10 +10,15 @@ function App() {
   const [settings, setSettings] = useState<TypographySettings>(defaultSettings)
   const [playSignal, setPlaySignal] = useState(0)
   const [exportOpen, setExportOpen] = useState(false)
+  const [appliedSettings, setAppliedSettings] = useState<TypographySettings | null>(null)
 
   const fontWarning = useMemo(() => {
     return null // Helvetica Neue is a system font, no warning needed
   }, [])
+
+  const handleApply = () => {
+    setAppliedSettings(settings)
+  }
 
   return (
     <div className="flex h-full w-full flex-col bg-zinc-950 text-zinc-100">
@@ -37,7 +42,7 @@ function App() {
 
       <div className="min-h-0 flex-1">
         {mode === 'grid' ? (
-          <GridView />
+          <GridView appliedSettings={appliedSettings} />
         ) : (
           <>
             <div className="flex h-full w-full">
@@ -69,6 +74,12 @@ function App() {
                         onClick={() => setPlaySignal((n) => n + 1)}
                       >
                         Play
+                      </button>
+                      <button
+                        className="rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                        onClick={handleApply}
+                      >
+                        Apply
                       </button>
                       <button
                         className="rounded-md border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-200 hover:bg-zinc-800"
