@@ -99,6 +99,8 @@ export function GridViewOverlay({ active, onClose, appliedSettings }: Props) {
             presetId: 'effect-1' as const,
             durationMs: settings.durationMs,
             characterStaggerMs: settings.characterStaggerMs,
+            staggerMs: settings.staggerMs,
+            animatePerCharacter: true,
             initialX: 0,
             initialY: 60,
             endX: 0,
@@ -107,7 +109,9 @@ export function GridViewOverlay({ active, onClose, appliedSettings }: Props) {
           }
           
           const preset = presets[currentSettings.presetId]
-          const delay = i * currentSettings.characterStaggerMs
+          const delay = currentSettings.animatePerCharacter
+            ? i * currentSettings.characterStaggerMs
+            : i * currentSettings.staggerMs
           
           el.animate(preset.getKeyframes(currentSettings), { 
             ...preset.getOptions(currentSettings),
@@ -120,9 +124,14 @@ export function GridViewOverlay({ active, onClose, appliedSettings }: Props) {
           presetId: 'effect-1' as const,
           durationMs: settings.durationMs,
           characterStaggerMs: settings.characterStaggerMs,
+          staggerMs: settings.staggerMs,
+          animatePerCharacter: true,
         }
+        const staggerMs = currentSettings.animatePerCharacter 
+          ? currentSettings.characterStaggerMs 
+          : currentSettings.staggerMs
         const totalAnimationTime = Math.max(...targets.map((_, i) => 
-          i * currentSettings.characterStaggerMs + currentSettings.durationMs
+          i * staggerMs + currentSettings.durationMs
         ))
         setTimeout(() => setShowBackButton(true), totalAnimationTime - 200) // Show slightly before last character completes
       })

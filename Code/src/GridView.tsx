@@ -56,9 +56,11 @@ export function GridView({ appliedSettings }: Props) {
           modifiedItem.bgColor = appliedSettings.backgroundColor
         }
         
+        // Apply text color to all items
+        modifiedItem.textColor = appliedSettings.textColor
+        
         // Apply text animation settings (this will be used in the overlay)
-        // The text content and text color remain the same
-        // Only the animation settings from configurator are applied
+        // The text content remains the same
         
         return modifiedItem
       })
