@@ -122,7 +122,6 @@ export function GridViewOverlay({ active, onClose, appliedSettings }: Props) {
         targets.forEach((el) => el.getAnimations().forEach((a) => a.cancel()))
         targets.forEach((el, i) => {
           // Use appliedSettings if available, otherwise use default settings
-          const animSettings = appliedSettings || settings
           const delay = i * (appliedSettings?.characterStaggerMs || settings.characterStaggerMs)
           const duration = appliedSettings?.durationMs || options.duration
           const dynamicKeyframes = getKeyframes(appliedSettings)
@@ -135,7 +134,6 @@ export function GridViewOverlay({ active, onClose, appliedSettings }: Props) {
         })
 
         // Show back button after character animations start
-        const animSettings = appliedSettings || settings
         const duration = appliedSettings?.durationMs || (options.duration as number)
         const totalAnimationTime = Math.max(...targets.map((_, i) => 
           i * (appliedSettings?.characterStaggerMs || settings.characterStaggerMs) + duration
