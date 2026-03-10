@@ -26,7 +26,7 @@ export type TypographySettings = {
 }
 
 export const defaultSettings: TypographySettings = {
-  lines: ['Type Lab', 'Typography Configurator'],
+  lines: ['TYPELAB', 'HELLO MONDAY'],
 
   fontFamily: 'Monigue DEMO',
   fontSizePx: 96,
