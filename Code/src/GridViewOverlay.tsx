@@ -151,7 +151,7 @@ export function GridViewOverlay({ active, onClose }: Props) {
           ref={buttonRef}
           className="flex flex-row justify-center items-center p-4 gap-2.5 absolute w-40 h-12 left-5 top-5 bg-white rounded-lg z-10"
           style={{
-            fontFamily: 'Monigue DEMO',
+            fontFamily: 'Helvetica Neue',
             fontWeight: 400,
             fontSize: '24px',
             lineHeight: '80%',
@@ -194,7 +194,7 @@ export function GridViewOverlay({ active, onClose }: Props) {
             ref={charsContainerRef}
             className="select-none"
             style={{
-              fontFamily: 'Monigue DEMO',
+              fontFamily: 'Helvetica Neue',
               fontSize: 'clamp(80px, 15vw, 400px)',
               letterSpacing: '-0.01em',
               lineHeight: 0.72,

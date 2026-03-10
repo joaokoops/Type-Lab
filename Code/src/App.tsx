@@ -12,9 +12,8 @@ function App() {
   const [exportOpen, setExportOpen] = useState(false)
 
   const fontWarning = useMemo(() => {
-    if (settings.fontFamily !== 'Monigue DEMO') return null
-    return "Make sure you've added /public/fonts/Monigue-DEMO.woff2"
-  }, [settings.fontFamily])
+    return null // Helvetica Neue is a system font, no warning needed
+  }, [])
 
   return (
     <div className="flex h-full w-full flex-col bg-zinc-950 text-zinc-100">

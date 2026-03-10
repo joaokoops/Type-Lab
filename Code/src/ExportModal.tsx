@@ -26,23 +26,13 @@ function buildSnippet(settings: TypographySettings) {
     .map((l) => `<div class="tl-line" data-tl-target${maskFixStyleWithX}>${l}</div>`)
     .join('\n')
 
-  const css = `@font-face {
-  font-family: 'Monigue DEMO';
-  src: url('./fonts/Monigue-DEMO.woff2') format('woff2');
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-}
-
-:root {
-  --tl-bg: ${settings.backgroundColor};
-  --tl-fg: ${settings.textColor};
-}
-
-body {
-  margin: 0;
-  background: var(--tl-bg);
-  color: var(--tl-fg);
+  const css = `.tl-container {
+  font-family: 'Helvetica Neue';
+  font-size: ${settings.fontSizePx}px;
+  letter-spacing: ${settings.letterSpacingEm}em;
+  line-height: ${settings.lineHeight};
+  font-weight: ${settings.fontWeight};
+  color: ${settings.textColor};
 }
 
 .tl-stage {
